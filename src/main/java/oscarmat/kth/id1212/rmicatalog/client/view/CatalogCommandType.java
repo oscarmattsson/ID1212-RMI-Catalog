@@ -55,6 +55,17 @@ public enum CatalogCommandType implements CommandType {
             "list",
             "List your private files and public files from other users in the " +
                     "catalog. This action requires that you are logged in."
+    ),
+    CONNECT(
+            "connect -h <host> -p <port>",
+            "Connect to a catalog server. This action must precede any other " +
+                    "operation.\n\t" +
+                    "-h Host name or IP address of catalog server.\n\t" +
+                    "-p Port number of catalog server."
+    ),
+    DISCONNECT(
+            "disconnect",
+            "Disconnect from the current catalog server."
     );
 
     private String help;

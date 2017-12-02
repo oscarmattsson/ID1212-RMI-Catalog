@@ -8,7 +8,7 @@ import java.util.Scanner;
 /**
  * Represents a command line view using the supplied enum for the set of usable
  * commands. The commands "help" and "stop" are reserved by the CMDView.
- * "help" posts a list of all available commands, override the
+ * "help" posts a listFiles of all available commands, override the
  * help method to change this behaviour. "stop" cancels the CMDView.
  * @param <E> Enum set of commands.
  */
@@ -92,7 +92,7 @@ public abstract class CMDView<E extends Enum<E> & CommandType> implements Runnab
                     handleInput(command);
                 }
                 catch (IllegalArgumentException e) {
-                    println("Error: Unknown command. Type \"help\" to get a list of available commands.");
+                    println("Error: Unknown command. Type \"help\" to get a listFiles of available commands.");
                 }
             }
         }
@@ -132,7 +132,7 @@ public abstract class CMDView<E extends Enum<E> & CommandType> implements Runnab
     protected abstract void handleInput(Command<E> input);
 
     /**
-     * Prints a help section to the command line view with a list of all
+     * Prints a help section to the command line view with a listFiles of all
      * available commands. Override this method to change the behaviour of the
      * "help" command.
      */
