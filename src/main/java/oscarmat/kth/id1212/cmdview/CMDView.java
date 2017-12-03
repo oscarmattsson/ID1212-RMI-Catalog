@@ -79,11 +79,11 @@ public abstract class CMDView<E extends Enum<E> & CommandType> implements Runnab
         while (running) {
             out.print(PROMPT);
             String input = in.nextLine();
-            if(matchReserved(HELP)) {
+            if(matchReserved(HELP, input)) {
                 Command help = reservedParser.parse(input);
                 printHelp(help);
             }
-            else if(matchReserved(EXIT)) {
+            else if(matchReserved(EXIT, input)) {
                 stop();
             }
             else {
@@ -98,12 +98,12 @@ public abstract class CMDView<E extends Enum<E> & CommandType> implements Runnab
         }
     }
 
-    private boolean matchReserved(String input) {
-        return input.toLowerCase().matches("^" + input + ".*");
+    private boolean matchReserved(String match, String input) {
+        return input.toLowerCase().matches("^" + match + ".*");
     }
 
     private void printHelp(Command help) {
-        String command = (String)help.getParameters().get("c");
+        String command = (String)help.getParameter("c");
         if(command != null) {
             if(command.equals(EXIT) || command.equals(HELP)) {
                 helpCommand(ReservedCommands.valueOf(command.toUpperCase()));

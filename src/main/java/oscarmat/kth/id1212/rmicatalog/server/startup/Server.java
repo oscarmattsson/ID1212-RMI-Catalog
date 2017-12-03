@@ -16,7 +16,7 @@ public class Server {
 
         try {
             new Server().startRegistry();
-            Naming.rebind(Controller.SERVER_URI, new Controller());
+            Naming.rebind(Controller.SERVER_URI, new Controller(logger));
             logger.putInfo("Server is running.");
         }
         catch (MalformedURLException | RemoteException e) {

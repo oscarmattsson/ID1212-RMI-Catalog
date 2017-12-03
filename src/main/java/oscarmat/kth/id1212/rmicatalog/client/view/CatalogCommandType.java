@@ -57,11 +57,10 @@ public enum CatalogCommandType implements CommandType {
                     "catalog. This action requires that you are logged in."
     ),
     CONNECT(
-            "connect -h <host> -p <port>",
+            "connect -h <host>",
             "Connect to a catalog server. This action must precede any other " +
                     "operation.\n\t" +
-                    "-h Host name or IP address of catalog server.\n\t" +
-                    "-p Port number of catalog server."
+                    "-h Host name or IP address of catalog server."
     ),
     DISCONNECT(
             "disconnect",

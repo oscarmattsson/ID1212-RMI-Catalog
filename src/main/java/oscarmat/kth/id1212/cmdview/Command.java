@@ -21,19 +21,26 @@ public class Command<E extends Enum<E> & CommandType> {
         this.parameters = parameters;
     }
 
+    /**
+     * @return The command type.
+     */
     public E getType() {
         return type;
     }
 
-    public Map<String, String> getParameters() {
-        return parameters;
+    /**
+     * @param key Name of the parameter.
+     * @return The value of the parameter.
+     */
+    public String getParameter(String key) {
+        return parameters.get(key);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Type: ").append(getType()).append("\n");
-        for(Map.Entry<String, String> entry : getParameters().entrySet()) {
+        for(Map.Entry<String, String> entry : parameters.entrySet()) {
             sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
         }
         return sb.toString();
