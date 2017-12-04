@@ -26,15 +26,17 @@ public enum CatalogCommandType implements CommandType {
                     "that you are logged in."
     ),
     UPLOAD(
-            "upload -f <file> [-public <permissions>]",
+            "upload -f <file> [-public -readonly]",
             "Upload a file to the catalog. The file can either be private " +
                     "(default) or public. This action requires that you are " +
-                    "logged in.\n\t" +
+                    "logged in. If the file already exists, it will be " +
+                    "overwritten if you have write permissions on it.\n\t" +
                     "-f Local path to the file you want to upload.\n\t" +
-                    "-public Sets the file as public, meaning it can be listed " +
-                    "by other users. Read and write permissions for other users " +
-                    "are set as a number which is the sum of permissions where " +
-                    "read is 1 and write is 2."
+                    "-public Sets the file as public, meaning it can be " +
+                    "accessed by other users.\n\t" +
+                    "-readonly Sets the file as readonly, meaning a public " +
+                    "file can only be read by other users; not updated or " +
+                    "deleted."
     ),
     DOWNLOAD(
             "download -f <file>",
@@ -43,8 +45,14 @@ public enum CatalogCommandType implements CommandType {
                     "file you are requesting.\n\t" +
                     "-f Name of the file in the catalog."
     ),
+    DELETE(
+            "delete -f <file>",
+            "Delete a file from the catalog. This action requires that you " +
+                    "are logged in and that you have write permissions on the " +
+                    "file you are deleting."
+    ),
     NOTIFY(
-            "notify -f <file> [-c]",
+            "notify -f <file>",
             "Tell the server that you want to be notified when other users " +
                     "access one of your public files for the rest of this " +
                     "session. This action requires that you are logged in.\n\t" +
