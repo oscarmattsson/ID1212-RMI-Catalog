@@ -2,12 +2,12 @@ package oscarmat.kth.id1212.rmicatalog.comon;
 
 import java.io.Serializable;
 
-public class UserCredentials implements Serializable {
+public class UserCredentialsDTO implements Serializable {
 
     private String username;
     private String password;
 
-    public UserCredentials(String username, String password) {
+    public UserCredentialsDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }
