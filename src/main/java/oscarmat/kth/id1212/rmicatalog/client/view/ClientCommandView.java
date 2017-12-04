@@ -64,6 +64,9 @@ public class ClientCommandView extends CMDView<CatalogCommandType> implements Ac
             case UPLOAD:
                 upload(command);
                 break;
+            case DELETE:
+                delete(command);
+                break;
             case NOTIFY:
                 notify(command);
                 break;
@@ -105,7 +108,15 @@ public class ClientCommandView extends CMDView<CatalogCommandType> implements Ac
 
     private void register(Command command) {
         try {
-            controller.register();
+            String username = command.getParameter("u");
+            String password = command.getParameter("p");
+            if(username == null || password == null) {
+                println("Missing parameter.");
+                println("Usage: " + CatalogCommandType.REGISTER.getUsage());
+            }
+            else {
+                println(controller.register(username, password));
+            }
         }
         catch (RemoteException e) {
             println(e.getMessage());
@@ -114,7 +125,7 @@ public class ClientCommandView extends CMDView<CatalogCommandType> implements Ac
 
     private void unregister(Command command) {
         try {
-            controller.unregister();
+            println(controller.unregister());
         }
         catch (RemoteException e) {
             println(e.getMessage());
@@ -123,7 +134,15 @@ public class ClientCommandView extends CMDView<CatalogCommandType> implements Ac
 
     private void login(Command command) {
         try {
-            controller.login();
+            String username = command.getParameter("u");
+            String password = command.getParameter("p");
+            if(username == null || password == null) {
+                println("Missing parameter.");
+                println("Usage: " + CatalogCommandType.LOGIN.getUsage());
+            }
+            else {
+                println(controller.login(username, password));
+            }
         }
         catch (RemoteException e) {
             println(e.getMessage());
@@ -132,7 +151,7 @@ public class ClientCommandView extends CMDView<CatalogCommandType> implements Ac
 
     private void logout(Command command) {
         try {
-            controller.logout();
+            println(controller.logout());
         }
         catch (RemoteException e) {
             println(e.getMessage());
@@ -141,7 +160,16 @@ public class ClientCommandView extends CMDView<CatalogCommandType> implements Ac
 
     private void upload(Command command) {
         try {
-            controller.upload();
+            String file = command.getParameter("f");
+            boolean isPublic = command.getParameter("public") != null;
+            boolean isReadonly = command.getParameter("readonly") != null;
+            if(file == null) {
+                println("Missing parameter.");
+                println("Usage: " + CatalogCommandType.UPLOAD.getUsage());
+            }
+            else {
+                println(controller.upload(file, isPublic, isReadonly));
+            }
         }
         catch (RemoteException e) {
             println(e.getMessage());
@@ -150,7 +178,30 @@ public class ClientCommandView extends CMDView<CatalogCommandType> implements Ac
 
     private void download(Command command) {
         try {
-            controller.download();
+            String file = command.getParameter("f");
+            if(file == null) {
+                println("Missing parameter");
+                println("Usage: " + CatalogCommandType.DOWNLOAD.getUsage());
+            }
+            else {
+                println(controller.download(file));
+            }
+        }
+        catch (RemoteException e) {
+            println(e.getMessage());
+        }
+    }
+
+    private void delete(Command command) {
+        try {
+            String file = command.getParameter("f");
+            if(file == null) {
+                println("Missing parameter");
+                println("Usage: " + CatalogCommandType.DELETE.getUsage());
+            }
+            else {
+                println(controller.delete(file));
+            }
         }
         catch (RemoteException e) {
             println(e.getMessage());
@@ -159,7 +210,14 @@ public class ClientCommandView extends CMDView<CatalogCommandType> implements Ac
 
     private void notify(Command command) {
         try {
-            controller.addAccessListener("", this);
+            String file = command.getParameter("f");
+            if(file == null) {
+                println("Missing parameter");
+                println("Usage: " + CatalogCommandType.NOTIFY.getUsage());
+            }
+            else {
+                println(controller.addAccessListener(file, this));
+            }
         }
         catch (RemoteException e) {
             println(e.getMessage());
@@ -168,7 +226,7 @@ public class ClientCommandView extends CMDView<CatalogCommandType> implements Ac
 
     private void list(Command command) {
         try {
-            controller.list();
+            println(controller.list());
         }
         catch (RemoteException e) {
             println(e.getMessage());

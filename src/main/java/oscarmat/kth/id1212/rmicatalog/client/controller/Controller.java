@@ -2,7 +2,10 @@ package oscarmat.kth.id1212.rmicatalog.client.controller;
 
 import oscarmat.kth.id1212.rmicatalog.comon.CatalogClient;
 import oscarmat.kth.id1212.rmicatalog.comon.CatalogServer;
+import oscarmat.kth.id1212.rmicatalog.comon.FileDTO;
+import oscarmat.kth.id1212.rmicatalog.comon.UserCredentialsDTO;
 
+import java.io.File;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -14,6 +17,7 @@ import java.util.*;
 public class Controller {
 
     private CatalogServer server;
+    private final CatalogClient client;
 
     private boolean connected = false;
     private boolean loggedIn = false;
@@ -23,8 +27,9 @@ public class Controller {
     /**
      * Create a new controller.
      */
-    public Controller() {
+    public Controller() throws RemoteException{
         accessListeners = new HashMap<>();
+        client = new ClientController();
     }
 
     /**
@@ -32,7 +37,7 @@ public class Controller {
      * @param file File to listen for access on.
      * @param listener The listener to be notified upon access.
      */
-    public void addAccessListener(String file, AccessListener listener) throws RemoteException {
+    public String addAccessListener(String file, AccessListener listener) throws RemoteException {
         Set<AccessListener> listeners = accessListeners.get(file);
         if(listeners != null) {
             listeners.add(listener);
@@ -42,7 +47,7 @@ public class Controller {
             listeners.add(listener);
             accessListeners.put(file, listeners);
         }
-        server.setNotifyAccess();
+        return server.setNotifyAccess(client, file);
     }
 
     /**
@@ -94,32 +99,51 @@ public class Controller {
         }
     }
 
-    public void login() throws RemoteException {
-        server.login();
+    public String login(String username, String password) throws RemoteException {
+        UserCredentialsDTO credentials = new UserCredentialsDTO(username, password);
+        return server.login(client, credentials);
     }
 
-    public void logout() throws RemoteException {
-        server.logout();
+    public String logout() throws RemoteException {
+        return server.logout(client);
     }
 
-    public void register() throws RemoteException {
-        server.register();
+    public String register(String username, String password) throws RemoteException {
+        UserCredentialsDTO credentials = new UserCredentialsDTO(username, password);
+        return server.register(client, credentials);
     }
 
-    public void unregister() throws RemoteException {
-        server.unregister();
+    public String unregister() throws RemoteException {
+        return server.unregister(client);
     }
 
-    public void upload() throws RemoteException {
-        server.upload();
+    public String upload(String filename, boolean isPublic, boolean isReadonly) throws RemoteException {
+        File file = new File(filename);
+        if(file.exists()) {
+            FileDTO dto;
+            if(isPublic) {
+                dto = new FileDTO(filename, file.length(), isPublic, isReadonly);
+            }
+            else {
+                dto = new FileDTO(filename, file.length());
+            }
+            return server.upload(client, dto);
+        }
+        else {
+            return "Error, no such file.";
+        }
     }
 
-    public void download() throws RemoteException {
-        server.download();
+    public String download(String filename) throws RemoteException {
+        return server.download(client, filename);
     }
 
-    public void list() throws RemoteException {
-        server.listFiles();
+    public String delete(String filename) throws RemoteException {
+        return server.delete(client, filename);
+    }
+
+    public String list() throws RemoteException {
+        return server.listFiles(client);
     }
 
     /**
@@ -127,7 +151,7 @@ public class Controller {
      */
     private class ClientController extends UnicastRemoteObject implements CatalogClient {
 
-        protected ClientController() throws RemoteException {
+        ClientController() throws RemoteException {
         }
 
         @Override
