@@ -1,26 +1,53 @@
 package oscarmat.kth.id1212.rmicatalog.server.integration;
 
 import org.hibernate.Session;
-import org.hibernate.Transaction;
-import oscarmat.kth.id1212.rmicatalog.client.view.CatalogCommandType;
-import oscarmat.kth.id1212.rmicatalog.comon.UserCredentials;
+import org.hibernate.SessionFactory;
 import oscarmat.kth.id1212.rmicatalog.server.model.User;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.Query;
 
-public class CatalogDAO {
+public class UserDAO extends DAO<User> {
 
-    private Session session;
-    private Transaction transaction;
-
-    private final EntityManagerFactory managerFactory;
-
-    public CatalogDAO() {
-        managerFactory = Persistence.createEntityManagerFactory("RMICatalogPU");
+    UserDAO(SessionFactory factory) {
+        super(factory);
     }
 
-    public void createUser(UserCredentials credentials) {
-
+    @Override
+    public void persist(User user) {
+        Session session = openTransaction();
+        session.persist(user);
+        closeTransaction();
     }
+
+    @Override
+    public void update(User user) {
+        Session session = openTransaction();
+        session.update(user);
+        closeTransaction();
+    }
+
+    @Override
+    public User findById(int id) {
+        Session session = openSession();
+        User user = session.get(User.class, id);
+        closeSession();
+        return user;
+    }
+
+    @Override
+    public void delete(User user) {
+        Session session = openTransaction();
+        session.delete(user);
+        closeTransaction();
+    }
+
+    public User findByUsername(String username) {
+        Session session = openSession();
+        Query query = session.getNamedQuery(User.SELECT_FROM_USERNAME)
+                .setParameter("username", username);
+        User user = (User)query.getSingleResult();
+        closeSession();
+        return user;
+    }
+
 }
