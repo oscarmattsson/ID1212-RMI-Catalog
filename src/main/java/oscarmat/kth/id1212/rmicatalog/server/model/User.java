@@ -4,14 +4,16 @@ import javax.persistence.*;
 
 @NamedQueries({
         @NamedQuery(
-                name = "selectAllUsers",
-                query = "SELECT user FROM User user"
+                name = User.SELECT_FROM_USERNAME,
+                query = "SELECT user FROM User user WHERE username = :username"
         )
 })
 
 @Entity
 @Table
 public class User {
+
+    public static final String SELECT_FROM_USERNAME = "selectFromUsername";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
